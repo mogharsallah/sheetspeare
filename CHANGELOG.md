@@ -9,9 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial Commit
+- Npm publish workflow
 
 ### Fixed
 
 - Replaced yarn with npm in workflow
 - Added missing build steps in workflow
+
+## [0.1.0] - 2023-08-03
+
+### Added
+
+- Initial Commit
