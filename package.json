@@ -1,6 +1,6 @@
 {
   "name": "sheetspeare",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Import locales from Google Sheet into Json files.",
   "type": "module",
   "bin": {
