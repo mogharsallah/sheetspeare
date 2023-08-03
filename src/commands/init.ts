@@ -7,6 +7,13 @@ import { createConfigFile } from '../core/files'
 import { logger } from '../utils/logger'
 
 export const initCommand = async () => {
+  if (!process.env.SERVICE_ACCOUNT_EMAIL || !process.env.SERVICE_ACCOUNT_PRIVATE_KEY) {
+    logger.error(
+      'Missing credentials. Make sure Your Google Service Account credentials are properly setup as environment variables. See README for more info: https://github.com/mogharsallah/sheetspeare#setup-environment-variables',
+    )
+    return
+  }
+
   logger.info(`Hey there! Let's set up your ${PackageName} configuration file 💪.`)
   const answers = await inquirer.prompt([
     {
