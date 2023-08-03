@@ -16,7 +16,7 @@ npm install --save-dev sheetspeare
 
 To start using Sheetspeare, follow these steps:
 
-### Setup an your Google project:
+### Setup a Google project:
 
 1. Go to the Google Developers Console
 2. Select your project or create a new one (and then select it)
@@ -100,6 +100,8 @@ After running the `init` command, Sheetspeare will create a configuration file n
 - `spreadsheetId`: The ID of the Google Spreadsheet containing the translations.
 - `path`: The path to the directory containing the locale files.
 - `locales`: An array of locale codes to pull from the Google Spreadsheet. The locale files under the path directory will be named using these locale codes.
+
+**Note:** This CLI is supports [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) config formats. You may move the configuration to other supported formats such as `.sheetspearerc.js` or even to your `package.json` file under `sheetspeare` property and it will be loaded automatically.
 
 ## Contributing
 
