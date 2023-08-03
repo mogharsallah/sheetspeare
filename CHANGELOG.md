@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## FIXED
+### FIXED
 
 - Fixed the bug in `init` command where the config cannot be loaded
 
