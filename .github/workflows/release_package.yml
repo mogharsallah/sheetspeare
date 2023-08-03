@@ -70,6 +70,10 @@ jobs:
           git commit -m "chore: release ${{ env.NEW_VERSION }}"
           git tag ${{ env.NEW_VERSION }}
 
+      # Build package
+      - name: Build package
+        run: npm run build
+
       # Set CLI version
       - name: Set CLI version
         run: |

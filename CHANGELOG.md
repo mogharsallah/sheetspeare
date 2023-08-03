@@ -13,5 +13,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Add missing version file
-- Replaced yarn with npm
+- Replaced yarn with npm in workflow
+- Added missing build steps in workflow
