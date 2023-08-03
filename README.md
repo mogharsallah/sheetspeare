@@ -1,6 +1,6 @@
 # Sheetspeare - Google Spreadsheet Translation Loader CLI
 
-[![npm version](https://badge.fury.io/js/sheetspeare.svg)](https://www.npmjs.com/package/sheetspeare)
+[![npm version](https://badge.fury.io/js/sheetspeare.svg)](https://badge.fury.io/js/sheetspeare)
 
 Sheetspeare is a powerful CLI tool that allows you to manage translations for your application using Google Spreadsheets. It simplifies the process of loading translation files from a Google Spreadsheet and keeping them in sync with your codebase. Say goodbye to manual copy-pasting and tedious translation management!
 
