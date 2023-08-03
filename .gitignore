@@ -1,0 +1,7 @@
+dist
+node_modules
+sandbox
+
+.env
+.sheetspearerc.json
+client_secret.json
