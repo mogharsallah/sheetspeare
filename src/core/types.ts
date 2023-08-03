@@ -1,6 +1,8 @@
 import { Command } from 'commander'
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
 
+export type CredentialsConfig = { serviceAccountEmail: string; serviceAccountPrivateKey: string }
+
 type CommandOptions = { debug: boolean; silent: boolean; questions: boolean }
 export type CommandArguments = [CommandOptions, Command]
 export type CommandAction = (...args: CommandArguments) => Promise<void>
@@ -40,7 +42,7 @@ export type WorksheetToLocalizationOptions = {
   worksheet: GoogleSpreadsheetWorksheet
 }
 
-export type SpreadsheetOptions = {
+export type LoadSpreadsheetOptions = CredentialsConfig & {
   spreadsheetId: string
 }
 
@@ -54,10 +56,10 @@ export type UpdateSpreadsheetLocalesOptions = {
   localizationDiff: DetailedLocalizationDiff
 }
 
-export type FilesConfig = {
+export type LocalizationConfig = {
+  spreadsheetId: string
   path: string
   locales: Locale[]
 }
 
-export type ConfigFile = SpreadsheetOptions & FilesConfig
-export type CredentialsConfig = { serviceAccountEmail: string; serviceAccountPrivateKey: string }
+export type ConfigParameters = LoadSpreadsheetOptions & LocalizationConfig

@@ -15,13 +15,14 @@ describe('Config', () => {
   beforeEach(() => {
     // @ts-ignore
     process.exit = processExitMock.mockReset()
-    Config._configFile = null
-    Config._credentials = null
+    Config._config = null
     lilconfigMock.mockReturnValue({
       search: jest.fn(() => ({
         config: null,
       })),
     })
+    delete process.env.SERVICE_ACCOUNT_EMAIL
+    delete process.env.SERVICE_ACCOUNT_PRIVATE_KEY
   })
 
   afterEach(() => {
@@ -34,7 +35,10 @@ describe('Config', () => {
         config: defaultFileConfig,
       })),
     })
-    Config.init('email', 'privatekey')
+
+    process.env.SERVICE_ACCOUNT_EMAIL = 'email'
+    process.env.SERVICE_ACCOUNT_PRIVATE_KEY = 'privatekey'
+
     expect(Config.config).toEqual({
       ...defaultFileConfig,
       serviceAccountEmail: 'email',
@@ -43,20 +47,35 @@ describe('Config', () => {
   })
 
   it('should exit with an error if config file is missing', () => {
-    Config.init('email', 'privatekey')
+    process.env.SERVICE_ACCOUNT_EMAIL = 'email'
+    process.env.SERVICE_ACCOUNT_PRIVATE_KEY = 'privatekey'
+
     Config.config
     expect(processExitMock).toHaveBeenCalledWith(1)
   })
 
-  it('should exit with an error if credentials are missing', () => {
-    Config.init()
+  it('should exit with an error if service account private key is missing', () => {
+    process.env.SERVICE_ACCOUNT_EMAIL = 'email'
     lilconfigMock.mockReturnValue({
       search: jest.fn(() => ({
         config: defaultFileConfig,
       })),
     })
 
-    Config.config
+    console.log(Config.config)
+    expect(processExitMock).toHaveBeenCalledWith(1)
+  })
+
+  it('should exit with an error if service account email is missing', () => {
+    process.env.SERVICE_ACCOUNT_PRIVATE_KEY = 'privatekey'
+
+    lilconfigMock.mockReturnValue({
+      search: jest.fn(() => ({
+        config: defaultFileConfig,
+      })),
+    })
+
+    console.log(Config.config)
     expect(processExitMock).toHaveBeenCalledWith(1)
   })
 })

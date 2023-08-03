@@ -1,30 +1,40 @@
 import { lilconfigSync } from 'lilconfig'
 
-import { ConfigFile, CredentialsConfig } from './core/types'
+import { ConfigParameters } from './core/types'
 import { logger } from './utils/logger'
 import { PackageName } from './constants'
 
 export default class Config {
-  static _configFile: ConfigFile | null
-  static _credentials: CredentialsConfig | null
-
-  static init = (serviceAccountEmail?: string, serviceAccountPrivateKey?: string) => {
-    const explorer = lilconfigSync(PackageName)
-    const result = explorer.search()
-    Config._configFile = (result?.config as ConfigFile) ?? null
-    Config._credentials =
-      serviceAccountEmail && serviceAccountPrivateKey ? { serviceAccountEmail, serviceAccountPrivateKey } : null
-  }
+  static _config: ConfigParameters | null
 
   static get config() {
-    if (!Config._configFile) {
-      logger.error('No config file found. Please run init command first.')
-      process.exit(1)
+    // If config is not set, try to load it
+    if (!Config._config) {
+      const fileConfig = lilconfigSync(PackageName).search()?.config
+      if (!fileConfig) {
+        logger.error('No config file found. Please run init command first.')
+        process.exit(1)
+      }
+
+      const serviceAccountEmail = process.env.SERVICE_ACCOUNT_EMAIL
+      if (!serviceAccountEmail) {
+        logger.error(
+          '`SERVICE_ACCOUNT_EMAIL` is not present in the environment variables. Make sure Your credentials are properly setup as environment variables.',
+        )
+        process.exit(1)
+      }
+
+      const serviceAccountPrivateKey = process.env.SERVICE_ACCOUNT_PRIVATE_KEY
+      if (!serviceAccountPrivateKey) {
+        logger.error(
+          '`SERVICE_ACCOUNT_PRIVATE_KEY` is not present in the environment variables. Make sure Your credentials are properly setup as environment variables.',
+        )
+        process.exit(1)
+      }
+
+      Config._config = { ...fileConfig, serviceAccountEmail, serviceAccountPrivateKey }
     }
-    if (!Config._credentials) {
-      logger.error('Missing credentials. Make sure Your credentials are properly setup as environment variables.')
-      process.exit(1)
-    }
-    return { ...Config._configFile, ...Config._credentials }
+
+    return Config._config as ConfigParameters
   }
 }

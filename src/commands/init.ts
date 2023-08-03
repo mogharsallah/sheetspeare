@@ -5,9 +5,9 @@ import { PackageName } from '../constants'
 import { initializeSpreadsheet, loadSpreadsheet } from '../core/sheets'
 import { createConfigFile } from '../core/files'
 import { logger } from '../utils/logger'
-import Config from '../config'
 
 export const initCommand = async () => {
+  // Ensure that the user has set up the required environment variables before running the command
   if (!process.env.SERVICE_ACCOUNT_EMAIL || !process.env.SERVICE_ACCOUNT_PRIVATE_KEY) {
     logger.error(
       'Missing credentials. Make sure Your Google Service Account credentials are properly setup as environment variables. See README for more info: https://github.com/mogharsallah/sheetspeare#setup-environment-variables',
@@ -51,24 +51,26 @@ export const initCommand = async () => {
 
   logger.info('Checking access to Google Spreadsheet...')
   const { data: spreadsheet, error } = await loadSpreadsheet({
+    serviceAccountEmail: process.env.SERVICE_ACCOUNT_EMAIL,
+    serviceAccountPrivateKey: process.env.SERVICE_ACCOUNT_PRIVATE_KEY,
     spreadsheetId: answers.spreadsheetId,
   })
   if (error) {
     logger.error('Could not access to Google Spreadsheet. Please check your credentials and try again.', error.message)
     return
   }
+  logger.info('✅ Access to Google Spreadsheet granted!')
 
+  if (answers.initializeSpreadsheet) {
+    initializeSpreadsheet({ spreadsheet, locales: answers.locales })
+  }
+
+  logger.info('Creating configuration file...')
   createConfigFile(`.${PackageName}rc.json`, {
     locales: answers.locales,
     spreadsheetId: answers.spreadsheetId,
     path: answers.path,
   })
-
-  Config.init(process.env.SERVICE_ACCOUNT_EMAIL, process.env.SERVICE_ACCOUNT_PRIVATE_KEY)
-
-  if (answers.initializeSpreadsheet) {
-    initializeSpreadsheet({ spreadsheet, locales: answers.locales })
-  }
 
   logger.info(chalk.bold(`Great! We are ready to go 🚀. Run ${chalk.gray(`${PackageName} pull`)}`))
   console.info(`To update the Google Spreadsheet with your local locales: Run ${chalk.gray(`${PackageName} push`)}`)

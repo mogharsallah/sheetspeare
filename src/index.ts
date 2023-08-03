@@ -6,14 +6,11 @@ import { pullCommand } from './commands/pull'
 
 import { program, Option } from 'commander'
 import { PackageName } from './constants'
-import Config from './config'
 import { pushCommand } from './commands/push'
 
 // @ts-ignore
 import { version } from './version'
 import { logger } from './utils/logger'
-
-Config.init(process.env.SERVICE_ACCOUNT_EMAIL, process.env.SERVICE_ACCOUNT_PRIVATE_KEY)
 
 const debugOption = new Option('-d, --debug', 'output extra debugging')
 const silentOption = new Option('-s, --silent', 'output no logs')

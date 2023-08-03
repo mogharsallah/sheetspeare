@@ -1,4 +1,5 @@
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
+import { JWT } from 'google-auth-library'
 
 import {
   CreateSnapshotOptions,
@@ -7,15 +8,23 @@ import {
   InitializeSpreadsheetOptions,
   SpreadsheetConfig,
   SpreadsheetConfigKeysType,
-  SpreadsheetOptions,
+  LoadSpreadsheetOptions,
   UpdateSpreadsheetLocalesOptions,
 } from './types'
 import { ConfigSheetName, LocaleSheetName } from '../constants'
-import { getJWT } from '../utils/jwt'
 
-export const loadSpreadsheet = async (options: SpreadsheetOptions): DataWithErrorAsync<GoogleSpreadsheet, Error> => {
+export const loadSpreadsheet = async (
+  options: LoadSpreadsheetOptions,
+): DataWithErrorAsync<GoogleSpreadsheet, Error> => {
   try {
-    const spreadsheet = new GoogleSpreadsheet(options.spreadsheetId, getJWT())
+    const spreadsheet = new GoogleSpreadsheet(
+      options.spreadsheetId,
+      new JWT({
+        email: options.serviceAccountEmail,
+        key: options.serviceAccountPrivateKey,
+        scopes: ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.file'],
+      }),
+    )
     await spreadsheet.loadInfo()
     return { data: spreadsheet, error: null }
   } catch (error) {

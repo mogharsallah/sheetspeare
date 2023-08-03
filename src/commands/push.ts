@@ -10,6 +10,8 @@ import { logger } from '../utils/logger'
 
 export const pushCommand: CommandAction = async (options) => {
   const { data: spreadsheet } = await loadSpreadsheet({
+    serviceAccountEmail: Config.config.serviceAccountEmail,
+    serviceAccountPrivateKey: Config.config.serviceAccountPrivateKey,
     spreadsheetId: Config.config.spreadsheetId,
   })
   if (!spreadsheet) {

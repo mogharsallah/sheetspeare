@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import chalk from 'chalk'
 
-import { ConfigFile, LoadFilesOptions, LocalizationMap, SaveFilesOptions } from './types'
+import { LoadFilesOptions, LocalizationConfig, LocalizationMap, SaveFilesOptions } from './types'
 import { parseMap, stringifyMap } from '../utils/json'
 import { logger } from '../utils/logger'
 
@@ -18,7 +18,7 @@ export const ensureDirectoryExistence = (p: string) => {
   fs.mkdirSync(dirname, { recursive: true })
 }
 
-export const createConfigFile = (p: string, config: ConfigFile) => {
+export const createConfigFile = (p: string, config: LocalizationConfig) => {
   fs.writeFileSync(path.resolve(p), JSON.stringify(config, null, 2), {
     encoding: 'utf-8',
   })
