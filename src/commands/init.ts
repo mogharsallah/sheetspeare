@@ -5,6 +5,7 @@ import { PackageName } from '../constants'
 import { initializeSpreadsheet, loadSpreadsheet } from '../core/sheets'
 import { createConfigFile } from '../core/files'
 import { logger } from '../utils/logger'
+import Config from '../config'
 
 export const initCommand = async () => {
   if (!process.env.SERVICE_ACCOUNT_EMAIL || !process.env.SERVICE_ACCOUNT_PRIVATE_KEY) {
@@ -57,15 +58,17 @@ export const initCommand = async () => {
     return
   }
 
-  if (answers.initializeSpreadsheet) {
-    initializeSpreadsheet({ spreadsheet, locales: answers.locales })
-  }
-
-  createConfigFile(`.${PackageName}rcon`, {
+  createConfigFile(`.${PackageName}rc.json`, {
     locales: answers.locales,
     spreadsheetId: answers.spreadsheetId,
     path: answers.path,
   })
+
+  Config.init(process.env.SERVICE_ACCOUNT_EMAIL, process.env.SERVICE_ACCOUNT_PRIVATE_KEY)
+
+  if (answers.initializeSpreadsheet) {
+    initializeSpreadsheet({ spreadsheet, locales: answers.locales })
+  }
 
   logger.info(chalk.bold(`Great! We are ready to go 🚀. Run ${chalk.gray(`${PackageName} pull`)}`))
   console.info(`To update the Google Spreadsheet with your local locales: Run ${chalk.gray(`${PackageName} push`)}`)
