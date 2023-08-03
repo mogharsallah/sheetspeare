@@ -13,6 +13,9 @@ export const getLocalizationDiff = (
 
 export const logLocalizationDiff = (diff: DetailedDiff) => {
   Object.entries(diff).forEach(([key, content]) => {
+    if (Object.keys(content).length === 0) {
+      return
+    }
     let coloredChalk = chalk
     switch (key) {
       case 'added': {
