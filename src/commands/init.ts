@@ -19,6 +19,13 @@ export const initCommand = async () => {
   const answers = await inquirer.prompt([
     {
       type: 'input',
+      name: 'spreadsheetId',
+      message:
+        'What is your Google Spreadsheet ID? If you have not created one yet, create an empty spreadsheet and paste the ID here.',
+      validate: (value) => value.length > 0 || 'Please enter your Google Spreadsheet ID: ',
+    },
+    {
+      type: 'input',
       name: 'path',
       message: 'Where do you want to save your localization files?',
       default: 'src/locales',
@@ -31,13 +38,6 @@ export const initCommand = async () => {
       filter(val: string) {
         return val.toLowerCase().replace(/ /g, '').split(',')
       },
-    },
-    {
-      type: 'input',
-      name: 'spreadsheetId',
-      message:
-        'What is your Google Spreadsheet ID? If you have not created one yet, create an empty spreadsheet and paste the ID here.',
-      validate: (value) => value.length > 0 || 'Please enter your Google Spreadsheet ID: ',
     },
     {
       type: 'confirm',
