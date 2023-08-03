@@ -7,7 +7,7 @@ import { parseMap, stringifyMap } from '../utils/json'
 import { logger } from '../utils/logger'
 
 export const resolveLocalePath = (p: string, locale: string) => {
-  return path.resolve(`${p}/${locale}on`)
+  return path.resolve(`${p}/${locale}.json`)
 }
 
 export const ensureDirectoryExistence = (p: string) => {
