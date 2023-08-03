@@ -1,12 +1,12 @@
 import inquirer from 'inquirer'
 
-import Config from '../config.js'
-import { getLocalizationDiff, logLocalizationDiff } from '../core/diff.js'
-import { loadLocales } from '../core/files.js'
-import { loadSpreadsheet, updateSpreadsheetLocales } from '../core/sheets.js'
-import { invertLocalizedMap, sheetToLocalization } from '../core/transformers.js'
-import { CommandAction } from '../core/types.js'
-import { logger } from '../utils/logger.js'
+import Config from '../config'
+import { getLocalizationDiff, logLocalizationDiff } from '../core/diff'
+import { loadLocales } from '../core/files'
+import { loadSpreadsheet, updateSpreadsheetLocales } from '../core/sheets'
+import { invertLocalizedMap, sheetToLocalization } from '../core/transformers'
+import { CommandAction } from '../core/types'
+import { logger } from '../utils/logger'
 
 export const pushCommand: CommandAction = async (options) => {
   const { data: spreadsheet } = await loadSpreadsheet({

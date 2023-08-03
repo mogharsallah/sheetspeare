@@ -6,8 +6,5 @@ export default {
     '^.+\\.ts?$': 'ts-jest',
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/'],
-  moduleNameMapper: {
-    '^.$.js': '$1',
-  },
   setupFiles: ['<rootDir>/test/setup.ts'],
 }

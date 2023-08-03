@@ -1,9 +1,9 @@
-import Config from '../config.js'
-import { getLocalizationDiff, logLocalizationDiff } from '../core/diff.js'
-import { loadLocales, saveLocales } from '../core/files.js'
-import { loadSpreadsheet } from '../core/sheets.js'
-import { invertLocalizedMap, sheetToLocalization } from '../core/transformers.js'
-import { logger } from '../utils/logger.js'
+import Config from '../config'
+import { getLocalizationDiff, logLocalizationDiff } from '../core/diff'
+import { loadLocales, saveLocales } from '../core/files'
+import { loadSpreadsheet } from '../core/sheets'
+import { invertLocalizedMap, sheetToLocalization } from '../core/transformers'
+import { logger } from '../utils/logger'
 
 export const pullCommand = async () => {
   const { data: spreadsheet } = await loadSpreadsheet({

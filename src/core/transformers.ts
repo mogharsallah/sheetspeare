@@ -1,4 +1,4 @@
-import { InvertedLocalizationMap, LocalizationMap, WorksheetToLocalizationOptions } from './types.js'
+import { InvertedLocalizationMap, LocalizationMap, WorksheetToLocalizationOptions } from './types'
 
 export const invertLocalizedMap = (localizationMap: LocalizationMap): InvertedLocalizationMap => {
   const invertedMap: InvertedLocalizationMap = {}

@@ -1,10 +1,10 @@
 import inquirer from 'inquirer'
 import chalk from 'chalk'
 
-import { PackageName } from '../constants.js'
-import { initializeSpreadsheet, loadSpreadsheet } from '../core/sheets.js'
-import { createConfigFile } from '../core/files.js'
-import { logger } from '../utils/logger.js'
+import { PackageName } from '../constants'
+import { initializeSpreadsheet, loadSpreadsheet } from '../core/sheets'
+import { createConfigFile } from '../core/files'
+import { logger } from '../utils/logger'
 
 export const initCommand = async () => {
   logger.info(`Hey there! Let's set up your ${PackageName} configuration file 💪.`)
@@ -54,7 +54,7 @@ export const initCommand = async () => {
     initializeSpreadsheet({ spreadsheet, locales: answers.locales })
   }
 
-  createConfigFile(`.${PackageName}rc.json`, {
+  createConfigFile(`.${PackageName}rcon`, {
     locales: answers.locales,
     spreadsheetId: answers.spreadsheetId,
     path: answers.path,

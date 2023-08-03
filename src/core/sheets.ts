@@ -9,9 +9,9 @@ import {
   SpreadsheetConfigKeysType,
   SpreadsheetOptions,
   UpdateSpreadsheetLocalesOptions,
-} from './types.js'
-import { ConfigSheetName, LocaleSheetName } from '../constants.js'
-import { getJWT } from '../utils/jwt.js'
+} from './types'
+import { ConfigSheetName, LocaleSheetName } from '../constants'
+import { getJWT } from '../utils/jwt'
 
 export const loadSpreadsheet = async (options: SpreadsheetOptions): DataWithErrorAsync<GoogleSpreadsheet, Error> => {
   try {

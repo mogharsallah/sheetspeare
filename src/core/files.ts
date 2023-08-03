@@ -2,12 +2,12 @@ import * as fs from 'fs'
 import * as path from 'path'
 import chalk from 'chalk'
 
-import { ConfigFile, LoadFilesOptions, LocalizationMap, SaveFilesOptions } from './types.js'
-import { parseMap, stringifyMap } from '../utils/json.js'
-import { logger } from '../utils/logger.js'
+import { ConfigFile, LoadFilesOptions, LocalizationMap, SaveFilesOptions } from './types'
+import { parseMap, stringifyMap } from '../utils/json'
+import { logger } from '../utils/logger'
 
 export const resolveLocalePath = (p: string, locale: string) => {
-  return path.resolve(`${p}/${locale}.json`)
+  return path.resolve(`${p}/${locale}on`)
 }
 
 export const ensureDirectoryExistence = (p: string) => {

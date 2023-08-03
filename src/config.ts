@@ -1,8 +1,8 @@
 import { lilconfigSync } from 'lilconfig'
 
-import { PackageName } from './constants'
 import { ConfigFile, CredentialsConfig } from './core/types'
 import { logger } from './utils/logger'
+import { PackageName } from './constants'
 
 export default class Config {
   static _configFile: ConfigFile | null

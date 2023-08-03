@@ -7,15 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- Fixed failing files import
+
 ## 0.4.0 - 2023-08-03
+
 ### Added
+
 - Npm publish workflow
 
 ### Fixed
+
 - Replaced yarn with npm in workflow
 - Added missing build steps in workflow
 - Remove publish script from package.json which causes publishing the package twice
 
 ## 0.2.0 - 2023-08-03
+
 ### Added
+
 - Initial Commit

@@ -2,7 +2,7 @@ import { DetailedDiff, detailedDiff } from 'deep-object-diff'
 import chalk from 'chalk'
 
 import { DetailedLocalizationDiff, InvertedLocalizationMap } from './types'
-import { logger } from '../utils/logger.js'
+import { logger } from '../utils/logger'
 
 export const getLocalizationDiff = (
   oldLocalization: InvertedLocalizationMap,

@@ -1,17 +1,17 @@
-#! /usr/bin/env node
+#! /usr/bin/env node --experimental-specifier-resolution=node
 
 import 'dotenv/config'
-import { initCommand } from './commands/init.js'
-import { pullCommand } from './commands/pull.js'
+import { initCommand } from './commands/init'
+import { pullCommand } from './commands/pull'
 
 import { program, Option } from 'commander'
-import { PackageName } from './constants.js'
-import Config from './config.js'
-import { pushCommand } from './commands/push.js'
+import { PackageName } from './constants'
+import Config from './config'
+import { pushCommand } from './commands/push'
 
 // @ts-ignore
-import { version } from './version.js'
-import { logger } from './utils/logger.js'
+import { version } from './version'
+import { logger } from './utils/logger'
 
 Config.init(process.env.SERVICE_ACCOUNT_EMAIL, process.env.SERVICE_ACCOUNT_PRIVATE_KEY)
 

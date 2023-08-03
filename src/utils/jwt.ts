@@ -1,5 +1,5 @@
 import { JWT } from 'google-auth-library'
-import Config from '../config.js'
+import Config from '../config'
 
 export const getJWT = () =>
   new JWT({
