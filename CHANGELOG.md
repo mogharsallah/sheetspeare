@@ -15,8 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replaced yarn with npm in workflow
 - Added missing build steps in workflow
+- Remove publish script from package.json which causes publishing the package twice
 
-## [0.1.0] - 2023-08-03
+## [0.2.0] - 2023-08-03
 
 ### Added
 
