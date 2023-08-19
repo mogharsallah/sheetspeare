@@ -69,7 +69,7 @@ export const getLocalesSheet = (spreadsheet: GoogleSpreadsheet): DataWithError<G
 export const getConfigSheet = (spreadsheet: GoogleSpreadsheet): DataWithError<GoogleSpreadsheetWorksheet, Error> => {
   const sheet = spreadsheet.sheetsByTitle[ConfigSheetName]
   if (!sheet) {
-    return { data: null, error: new Error(`Sheet ${ConfigSheetName} not found`) }
+    return { data: null, error: new Error(`Sheet "${ConfigSheetName}" not found`) }
   }
 
   return { data: sheet, error: null }
