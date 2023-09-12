@@ -62,7 +62,7 @@ describe('Config', () => {
       })),
     })
 
-    console.log(Config.config)
+    Config.config
     expect(processExitMock).toHaveBeenCalledWith(1)
   })
 
@@ -75,7 +75,7 @@ describe('Config', () => {
       })),
     })
 
-    console.log(Config.config)
+    Config.config
     expect(processExitMock).toHaveBeenCalledWith(1)
   })
 })

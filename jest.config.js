@@ -7,4 +7,7 @@ export default {
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/'],
   setupFiles: ['<rootDir>/test/setup.ts'],
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: ['src/**/*.{js,ts}'],
+  coverageReporters: ['json', 'lcov', 'text'],
 }
