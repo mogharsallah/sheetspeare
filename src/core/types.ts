@@ -3,7 +3,7 @@ import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadshee
 
 export type CredentialsConfig = { serviceAccountEmail: string; serviceAccountPrivateKey: string }
 
-type CommandOptions = { debug: boolean; silent: boolean; questions: boolean }
+type CommandOptions = { debug: boolean; silent: boolean; questions: boolean; force: boolean }
 export type CommandArguments = [CommandOptions, Command]
 export type CommandAction = (...args: CommandArguments) => Promise<void>
 export type DataWithError<D, E extends Error> = { data: D; error: null } | { data: null; error: E }
@@ -13,9 +13,9 @@ export type TranslationMap = Record<string, string>
 export type LocalizationMap = Record<Locale, TranslationMap>
 export type InvertedLocalizationMap = Record<string, Record<Locale, string>>
 export type DetailedLocalizationDiff = {
-  added: InvertedLocalizationMap
-  deleted: InvertedLocalizationMap
-  updated: InvertedLocalizationMap
+  added: TranslationMap
+  deleted: TranslationMap
+  updated: TranslationMap
 }
 export type SpreadsheetConfig = {
   snapshotCount?: number
@@ -28,7 +28,7 @@ export type CreateSnapshotOptions = {
 
 export type SaveFilesOptions = {
   path: string
-  localizationMap: LocalizationMap
+  translationMap: TranslationMap
 }
 
 export type LoadFilesOptions = {
@@ -54,6 +54,7 @@ export type InitializeSpreadsheetOptions = {
 export type UpdateSpreadsheetLocalesOptions = {
   spreadsheet: GoogleSpreadsheet
   localizationDiff: DetailedLocalizationDiff
+  deleteMissingLocales?: boolean
 }
 
 export type LocalizationConfig = {

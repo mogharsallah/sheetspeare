@@ -1,8 +1,8 @@
 import Config from '../config'
-import { getLocalizationDiff, logLocalizationDiff } from '../core/diff'
+import { getLocalizationDiff, logLocalizationDiff, noChanges } from '../core/diff'
 import { loadLocales, saveLocales } from '../core/files'
 import { loadSpreadsheet } from '../core/sheets'
-import { invertLocalizedMap, sheetToLocalization } from '../core/transformers'
+import { sheetToTranslationMap } from '../core/transformers'
 import { logger } from '../utils/logger'
 
 export const pullCommand = async () => {
@@ -16,7 +16,7 @@ export const pullCommand = async () => {
     return
   }
 
-  const pulledMap = await sheetToLocalization({
+  const pulledMap = await sheetToTranslationMap({
     locales: Config.config.locales,
     worksheet: spreadsheet.sheetsByIndex[0],
   })
@@ -27,8 +27,14 @@ export const pullCommand = async () => {
     ignoreMissingLocaleFiles: true,
   })
 
-  const diff = getLocalizationDiff(invertLocalizedMap(localMap), invertLocalizedMap(pulledMap))
+  const diff = getLocalizationDiff(localMap, pulledMap)
+
+  if (noChanges(diff)) {
+    logger.info('No changes to pull.')
+    return
+  }
+
   logLocalizationDiff(diff)
 
-  await saveLocales({ localizationMap: pulledMap, path: Config.config.path })
+  await saveLocales({ translationMap: pulledMap, path: Config.config.path })
 }

@@ -1,4 +1,4 @@
-import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
+import { GoogleSpreadsheet, GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from 'google-spreadsheet'
 import { JWT } from 'google-auth-library'
 
 import {
@@ -12,6 +12,8 @@ import {
   UpdateSpreadsheetLocalesOptions,
 } from './types'
 import { ConfigSheetName, LocaleSheetName } from '../constants'
+import { parseLocaleKey } from '../utils/json'
+import { logger } from '../utils/logger'
 
 export const loadSpreadsheet = async (
   options: LoadSpreadsheetOptions,
@@ -147,6 +149,9 @@ export const updateSpreadsheetLocales = async (
 
   const rows = await sheet.getRows()
 
+  const changedRows = new Map<string, GoogleSpreadsheetRow>()
+  const addedRows = new Map<string, Record<string, string>>()
+
   // Create a new snapshot
   if (rows.length) {
     await snapshot({ spreadsheet: options.spreadsheet })
@@ -154,50 +159,52 @@ export const updateSpreadsheetLocales = async (
 
   // Update existing locales
   await Promise.all(
-    Object.entries(options.localizationDiff.updated).map(async ([key, localesMap]) => {
-      if (!localesMap) {
-        console.error(`Invalid locales for key: ${key}`)
-      }
+    Object.entries(options.localizationDiff.updated).map(async ([localeWithKey, value]) => {
+      const [locale, key] = parseLocaleKey(localeWithKey)
       const row = rows.find((row) => row.get('key') === key)
       if (row) {
-        row.assign(localesMap)
-        await row.save()
+        row.set(locale, value)
+        changedRows.set(key, row)
       }
     }),
   )
 
   // Add new locales
   await Promise.all(
-    Object.entries(options.localizationDiff.added).map(async ([key, localesMap]) => {
-      if (!localesMap) {
-        console.error(`Invalid locales for key: ${key}`)
-      }
+    Object.entries(options.localizationDiff.added).map(async ([localeWithKey, value]) => {
+      const [locale, key] = parseLocaleKey(localeWithKey)
       const row = rows.find((row) => row.get('key') === key)
       if (!row) {
-        await sheet.addRow({ key, ...localesMap })
+        const rowToAdd = addedRows.get(key) || { key }
+        addedRows.set(key, { ...rowToAdd, [locale]: value })
       } else {
-        row.assign(localesMap)
-        await row.save()
+        row.set(locale, value)
+        changedRows.set(key, row)
       }
     }),
   )
 
   // Remove deleted locales
-  await Promise.all(
-    Object.entries(options.localizationDiff.deleted).map(async ([key, localesMap]) => {
-      const row = rows.find((row) => row.get('key') === key)
-      if (row) {
-        if (!localesMap) {
-          await row.delete()
-          return
-        }
-        Object.entries(localesMap).forEach(([locale]) => {
+  if (options.deleteMissingLocales && Object.keys(options.localizationDiff.deleted).length) {
+    await Promise.all(
+      Object.entries(options.localizationDiff.deleted).map(async ([localeWithKey]) => {
+        const [locale, key] = parseLocaleKey(localeWithKey)
+        const row = rows.find((row) => row.get('key') === key)
+        if (row) {
           row.set(locale, '')
-        })
-        await row.save()
-      }
-    }),
-  )
+          changedRows.set(key, row)
+        }
+      }),
+    )
+    logger.warn('Deleted locales cells were removed from the spreadsheet, Please clean empty rows manually.')
+  }
+
+  await Promise.all([...changedRows.values()].map(async (row) => row.save()))
+
+  const addedRowsArray = [...addedRows.values()]
+  if (addedRowsArray.length) {
+    await sheet.addRows([...addedRows.values()])
+  }
 
   return { data: undefined, error: null }
 }

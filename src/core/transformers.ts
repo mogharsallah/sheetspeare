@@ -1,34 +1,32 @@
-import { InvertedLocalizationMap, LocalizationMap, WorksheetToLocalizationOptions } from './types'
+import { parseLocaleKey, stringifyLocaleKey } from '../utils/json'
+import { LocalizationMap, TranslationMap, WorksheetToLocalizationOptions } from './types'
 
-export const invertLocalizedMap = (localizationMap: LocalizationMap): InvertedLocalizationMap => {
-  const invertedMap: InvertedLocalizationMap = {}
-  Object.entries(localizationMap).forEach(([locale, translationMap]) => {
-    Object.entries(translationMap).forEach(([key, value]) => {
-      if (!invertedMap[key]) {
-        invertedMap[key] = {}
-      }
-      invertedMap[key][locale] = value
-    })
+export const translationMapToLocalizedMap = (translationMap: TranslationMap): LocalizationMap => {
+  const localizedMap: LocalizationMap = {}
+  Object.entries(translationMap).forEach(([localeWithKey, value]) => {
+    const [locale, key] = parseLocaleKey(localeWithKey)
+
+    if (!localizedMap[locale]) {
+      localizedMap[locale] = {}
+    }
+    localizedMap[locale][key] = value
   })
-  return invertedMap
+
+  return localizedMap
 }
 
-export const sheetToLocalization = async (options: WorksheetToLocalizationOptions): Promise<LocalizationMap> => {
+export const sheetToTranslationMap = async (options: WorksheetToLocalizationOptions): Promise<TranslationMap> => {
   const rows = await options.worksheet.getRows()
-  const localeMap: LocalizationMap = {}
-
-  options.locales.forEach((locale) => {
-    localeMap[locale] = {}
-  })
+  const map: TranslationMap = {}
 
   rows.forEach((row) => {
     options.locales.forEach((locale) => {
       const value = row.get(locale)
       if (value) {
-        localeMap[locale][row.get('key')] = row.get(locale)
+        map[stringifyLocaleKey(locale, row.get('key'))] = value
       }
     })
   })
 
-  return localeMap
+  return map
 }

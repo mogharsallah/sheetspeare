@@ -2,9 +2,10 @@ import * as fs from 'fs'
 import * as path from 'path'
 import chalk from 'chalk'
 
-import { LoadFilesOptions, LocalizationConfig, LocalizationMap, SaveFilesOptions } from './types'
-import { parseMap, stringifyMap } from '../utils/json'
+import { LoadFilesOptions, LocalizationConfig, SaveFilesOptions, TranslationMap } from './types'
+import { parseMap, stringifyLocaleKey, stringifyMap } from '../utils/json'
 import { logger } from '../utils/logger'
+import { translationMapToLocalizedMap } from './transformers'
 
 export const resolveLocalePath = (p: string, locale: string) => {
   return path.resolve(`${p}/${locale}.json`)
@@ -26,21 +27,26 @@ export const createConfigFile = (p: string, config: LocalizationConfig) => {
 }
 
 export const loadLocales = async (options: LoadFilesOptions) => {
-  const localizationMap: LocalizationMap = {}
+  const map: TranslationMap = {}
   options.locales.forEach((locale) => {
     const localePath = resolveLocalePath(options.path, locale)
     if (fs.existsSync(localePath)) {
-      localizationMap[locale] = parseMap(fs.readFileSync(localePath, { encoding: 'utf-8' }))
+      Object.entries(parseMap(fs.readFileSync(localePath, { encoding: 'utf-8' }))).forEach(([key, value]) => {
+        map[stringifyLocaleKey(locale, key)] = value
+      })
     } else if (!options.ignoreMissingLocaleFiles) {
       logger.warn(chalk.yellow(`⚠️ Locale file for ${locale} not found!`))
     }
   })
-  return localizationMap
+  return map
 }
 
 export const saveLocales = async (options: SaveFilesOptions) => {
   ensureDirectoryExistence(options.path)
-  Object.entries(options.localizationMap).forEach(([locale, content]) => {
+
+  const localizedMap = translationMapToLocalizedMap(options.translationMap)
+
+  Object.entries(localizedMap).forEach(([locale, content]) => {
     fs.writeFileSync(resolveLocalePath(options.path, locale), stringifyMap(content), {
       encoding: 'utf-8',
     })

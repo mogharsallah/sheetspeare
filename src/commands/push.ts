@@ -1,10 +1,10 @@
 import inquirer from 'inquirer'
 
 import Config from '../config'
-import { getLocalizationDiff, logLocalizationDiff } from '../core/diff'
+import { getLocalizationDiff, logLocalizationDiff, noChanges } from '../core/diff'
 import { loadLocales } from '../core/files'
 import { loadSpreadsheet, updateSpreadsheetLocales } from '../core/sheets'
-import { invertLocalizedMap, sheetToLocalization } from '../core/transformers'
+import { sheetToTranslationMap } from '../core/transformers'
 import { CommandAction } from '../core/types'
 import { logger } from '../utils/logger'
 
@@ -20,39 +20,58 @@ export const pushCommand: CommandAction = async (options) => {
   }
 
   const localMap = await loadLocales({ path: Config.config.path, locales: Config.config.locales })
-  const pulledMap = await sheetToLocalization({
+  const pulledMap = await sheetToTranslationMap({
     locales: Config.config.locales,
     worksheet: spreadsheet.sheetsByIndex[0],
   })
 
-  const invertedLocalMap = invertLocalizedMap(localMap)
-  const invertedPulledMap = invertLocalizedMap(pulledMap)
-
-  const diff = getLocalizationDiff(invertedPulledMap, invertedLocalMap)
+  const diff = getLocalizationDiff(pulledMap, localMap)
   logLocalizationDiff(diff)
 
-  if (!Object.keys(diff.added).length && !Object.keys(diff.deleted).length && !Object.keys(diff.updated).length) {
+  if (noChanges(diff)) {
     logger.info('No changes to push.')
     return
   }
 
+  let forceDeleteMissingLocales = options.force
+
   if (options.questions) {
-    const answers = await inquirer.prompt([
+    const prompts = [
       {
         type: 'confirm',
         name: 'continue',
         message: 'Do you want to continue?',
         default: false,
       },
-    ])
+    ]
+    if (!forceDeleteMissingLocales && Object.keys(diff.deleted).length) {
+      prompts.unshift({
+        type: 'confirm',
+        name: 'forceDelete',
+        message:
+          'Some keys are missing from you local files, Do you want to remove these keys from Google spreadsheet?',
+        default: false,
+      })
+    }
+
+    const answers = await inquirer.prompt(prompts)
+
     if (!answers.continue) {
       logger.info('Push cancelled')
       return
     }
+
+    if (answers.forceDelete) {
+      forceDeleteMissingLocales = true
+    }
   }
 
   logger.info('Pushing to Google Spreadsheet...')
-  const { error } = await updateSpreadsheetLocales({ spreadsheet, localizationDiff: diff })
+  const { error } = await updateSpreadsheetLocales({
+    spreadsheet,
+    localizationDiff: diff,
+    deleteMissingLocales: forceDeleteMissingLocales,
+  })
   if (error) {
     logger.error('❌ Error updating Google Spreadsheet:', error.message)
   } else {

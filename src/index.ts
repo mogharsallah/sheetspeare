@@ -15,6 +15,7 @@ import { logger } from './utils/logger'
 const debugOption = new Option('-d, --debug', 'output extra debugging')
 const silentOption = new Option('-s, --silent', 'output no logs')
 const noQuestionsOption = new Option('-n, --no-questions', 'ask no questions, confirm all actions')
+const forceOption = new Option('-f, --force-delete', 'Delete missing locales from Google Spreadsheet')
 
 program.name(PackageName).description('CLI to manage localization files with Google Sheets').version(version)
 
@@ -39,6 +40,7 @@ program
   .addOption(debugOption)
   .addOption(silentOption)
   .addOption(noQuestionsOption)
+  .addOption(forceOption)
   .on('option:debug', function () {
     logger.setLevel('debug')
   })

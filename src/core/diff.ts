@@ -1,23 +1,24 @@
 import { DetailedDiff, detailedDiff } from 'deep-object-diff'
 import chalk from 'chalk'
 
-import { DetailedLocalizationDiff, InvertedLocalizationMap } from './types'
+import { DetailedLocalizationDiff, TranslationMap } from './types'
 import { logger } from '../utils/logger'
+import { parseLocaleKey } from '../utils/json'
 
 export const getLocalizationDiff = (
-  oldLocalization: InvertedLocalizationMap,
-  newLocalization: InvertedLocalizationMap,
+  oldLocalization: TranslationMap,
+  newLocalization: TranslationMap,
 ): DetailedLocalizationDiff => {
   return detailedDiff(oldLocalization, newLocalization) as DetailedLocalizationDiff
 }
 
 export const logLocalizationDiff = (diff: DetailedDiff) => {
-  Object.entries(diff).forEach(([key, content]) => {
+  Object.entries(diff).forEach(([diffType, content]) => {
     if (Object.keys(content).length === 0) {
       return
     }
     let coloredChalk = chalk
-    switch (key) {
+    switch (diffType) {
       case 'added': {
         logger.info(chalk.bold.dim('Added locales:'))
         coloredChalk = chalk.green
@@ -30,17 +31,16 @@ export const logLocalizationDiff = (diff: DetailedDiff) => {
       }
       case 'updated': {
         logger.info(chalk.bold.dim('Updated locales:'))
-        coloredChalk = chalk.red
+        coloredChalk = chalk.yellow
       }
     }
 
-    Object.entries(content).forEach(([key, localeMap]) => {
-      logger.info(
-        coloredChalk.bold(
-          localeMap ? `[${Object.keys(localeMap).join(', ')}]:  Key:` : '[ALL Locales]    Key:',
-          coloredChalk.italic(`${key}`),
-        ),
-      )
+    Object.entries(content).forEach(([localeWithKey, value]) => {
+      const [locale, key] = parseLocaleKey(localeWithKey)
+      logger.info(coloredChalk.bold(`${locale}:`, coloredChalk.italic(key)), value ? `"${chalk.dim(value)}"` : '')
     })
   })
 }
+
+export const noChanges = (diff: DetailedDiff) =>
+  !Object.keys(diff.added).length && !Object.keys(diff.deleted).length && !Object.keys(diff.updated).length
