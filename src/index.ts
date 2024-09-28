@@ -9,7 +9,7 @@ import { PackageName } from './constants'
 import { pushCommand } from './commands/push'
 
 // @ts-ignore
-import { version } from './version'
+import { version } from './version.js'
 import { logger } from './utils/logger'
 
 const debugOption = new Option('-d, --debug', 'output extra debugging')
